@@ -46,9 +46,6 @@ class RemoveGetETagEntries extends BasicEmitter {
 	 * Removes all entries with the key "{DAV:}getetag" from the table properties
 	 */
 	public function run() {
-
-		$this->connection->beginTransaction();
-
 		$sql = 'DELETE FROM `*PREFIX*properties`'
 			. ' WHERE `propertyname` = ?';
 		$deletedRows = $this->connection->executeUpdate($sql, ['{DAV:}getetag']);
