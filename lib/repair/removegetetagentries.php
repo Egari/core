@@ -50,8 +50,8 @@ class RemoveGetETagEntries extends BasicEmitter {
 		$this->connection->beginTransaction();
 
 		$sql = 'DELETE FROM `*PREFIX*properties`'
-			. ' WHERE `propertyname` = "{DAV:}getetag"';
-		$deletedRows = $this->connection->executeUpdate($sql);
+			. ' WHERE `propertyname` = ?';
+		$deletedRows = $this->connection->executeUpdate($sql, ['{DAV:}getetag']);
 
 		$this->emit(
 			'\OC\Repair',

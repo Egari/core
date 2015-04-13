@@ -21,7 +21,10 @@
 
 namespace Test\Repair;
 
-class TestRemoveGetETagEntries extends \Test\TestCase {
+use OC\Repair\RemoveGetETagEntries;
+use Test\TestCase;
+
+class RemoveGetETagEntriesTest extends TestCase {
 	/** @var \OCP\IDBConnection */
 	protected $connection;
 
@@ -50,20 +53,20 @@ class TestRemoveGetETagEntries extends \Test\TestCase {
 		$stmt = $this->connection->executeQuery($sqlToFetchProperties, [$userName]);
 		$entries = $stmt->fetchAll(\PDO::FETCH_NUM);
 
-		$this->assertSame(2, count($entries), 'Asserts that two entries are returned as we have inserted two');
+		$this->assertCount(2, $entries, 'Asserts that two entries are returned as we have inserted two');
 		foreach($entries as $entry) {
 			$this->assertTrue(in_array($entry, $data), 'Asserts that the entries are the ones from the test data set');
 		}
 
 		// run repair step
-		$repair = new \OC\Repair\RemoveGetETagEntries($this->connection);
+		$repair = new RemoveGetETagEntries($this->connection);
 		$repair->run();
 
 		// check if test data is correctly modified in DB
 		$stmt = $this->connection->executeQuery($sqlToFetchProperties, [$userName]);
 		$entries = $stmt->fetchAll(\PDO::FETCH_NUM);
 
-		$this->assertSame(1, count($entries), 'Asserts that only one entry is returned after the repair step - the other one has to be removed');
+		$this->assertCount(1, $entries, 'Asserts that only one entry is returned after the repair step - the other one has to be removed');
 		$this->assertSame($data[1], $entries[0], 'Asserts that the returned entry is the correct one from the test data set');
 
 		// remove test data
